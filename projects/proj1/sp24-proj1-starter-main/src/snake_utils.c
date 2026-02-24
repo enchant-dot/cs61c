@@ -1,12 +1,10 @@
 #include "snake_utils.h"
-
+#include "state.h"
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "state.h"
-
-unsigned int det_rand(unsigned int* state) {
+unsigned int det_rand(unsigned int *state) {
   if (*state == 0) {
     *state = 1;
   }
@@ -20,15 +18,15 @@ unsigned int det_rand(unsigned int* state) {
 
 unsigned int seed = 1;
 
-unsigned int get_num_cols(game_state_t* state, unsigned int row) {
-  unsigned int num_cols = (unsigned int) strlen(state->board[row]);
+unsigned int get_num_cols(game_state_t *state, unsigned int row) {
+  unsigned int num_cols = (unsigned int)strlen(state->board[row]);
   while (num_cols > 0 && state->board[row][num_cols - 1] == '\n') {
     num_cols--;
   }
   return num_cols;
 }
 
-int deterministic_food(game_state_t* state) {
+int deterministic_food(game_state_t *state) {
   unsigned int row = det_rand(&seed) % state->num_rows;
   unsigned int col = det_rand(&seed) % get_num_cols(state, row);
 
@@ -41,12 +39,12 @@ int deterministic_food(game_state_t* state) {
   return 1;
 }
 
-int corner_food(game_state_t* state) {
+int corner_food(game_state_t *state) {
   state->board[1][1] = '*';
   return 1;
 }
 
-void redirect_snake(game_state_t* state, char input_direction) {
+void redirect_snake(game_state_t *state, char input_direction) {
   unsigned int row;
   unsigned int col;
   row = state->snakes->head_row;
@@ -69,10 +67,10 @@ void redirect_snake(game_state_t* state, char input_direction) {
 
 unsigned int snake_seed = 1;
 
-void random_turn(game_state_t* state, int snum) {
-  snake_t* snake = &(state->snakes[snum]);
+void random_turn(game_state_t *state, int snum) {
+  snake_t *snake = &(state->snakes[snum]);
   char cur_head = state->board[snake->head_row][snake->head_col];
-  char* heads = "<v>^";
+  char *heads = "<v>^";
   int i;
   for (i = 0; i < 4; ++i) {
     if (heads[i] == cur_head)

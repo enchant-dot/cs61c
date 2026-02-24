@@ -15,7 +15,7 @@ bool clear_unit_test_files() {
 }
 
 bool test_create_default_state() {
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
 
   if (state == NULL) {
     printf("%s\n", "create_default_state is not implemented.");
@@ -30,10 +30,15 @@ bool test_create_default_state() {
     return false;
   }
 
+  // Test if the board is mutable
+  // If it crashes here, your board is not mutable
+  char original_char = get_board_at(state, 0, 0);
+  set_board_at(state, 0, 0, '0');
+  set_board_at(state, 0, 0, original_char);
+
   for (unsigned int row = 0; row < DEFAULT_BOARD_HEIGHT; row++) {
     for (unsigned int col = 0; col < DEFAULT_BOARD_WIDTH; col++) {
-      if (row == 0 || col == 0 || row == DEFAULT_BOARD_HEIGHT - 1 ||
-          col == DEFAULT_BOARD_WIDTH - 1) {
+      if (row == 0 || col == 0 || row == DEFAULT_BOARD_HEIGHT - 1 || col == DEFAULT_BOARD_WIDTH - 1) {
         if (!assert_map_equals(state, row, col, '#')) {
           return false;
         }
@@ -63,7 +68,7 @@ bool test_create_default_state() {
     if (!(get_board_at(state, row, DEFAULT_BOARD_WIDTH) == '\0' ||
           (get_board_at(state, row, DEFAULT_BOARD_WIDTH) == '\n' &&
            get_board_at(state, row, DEFAULT_BOARD_WIDTH + 1) == '\0'))) {
-      printf("Warning: we think row %d of your board does not end in a null byte", row);
+      printf("Warning: we think row %d of your board does not end in a null byte\n", row);
     }
   }
 
@@ -87,16 +92,17 @@ bool test_create_default_state() {
     return false;
   }
 
+  free_state(state);
+
   return true;
 }
 
 bool test_free_state() {
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
   free_state(state);
 
   printf("%s\n",
-         "This test case only checks for leaks in Tasks 1 and 2. Make sure that no Valgrind errors "
-         "are printed!");
+         "This test case only checks for leaks in Tasks 1 and 2. Make sure that no Valgrind errors are printed!");
 
   return true;
 }
@@ -104,35 +110,34 @@ bool test_free_state() {
 bool test_print_board_1() {
   clear_unit_test_files();
 
-  char* expected =
-    "####################\n"
-    "#                  #\n"
-    "# d>D    *         #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "####################\n";
+  char *expected = "####################\n"
+                   "#                  #\n"
+                   "# d>D    *         #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "####################\n";
   size_t file_size = strlen(expected);
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
   save_board(state, "unit-test-out.snk");
 
   // We hardcoded a filesize here since we know the board is 378 characters.
   // You shouldn't hardcode sizes in your own implementation.
   char actual[file_size + 1];
 
-  FILE* f = fopen("unit-test-out.snk", "r");
+  FILE *f = fopen("unit-test-out.snk", "r");
 
   if (!assert_file_size("unit-test-out.snk", file_size)) {
     return false;
@@ -143,11 +148,11 @@ bool test_print_board_1() {
   actual[file_size] = '\0';
 
   if (strcmp(expected, actual) != 0) {
-    printf("%s\n",
-           "Your printed board doesn't match the expected output. See unit-test-out.snk for what "
-           "you printed.");
+    printf("%s\n", "Your printed board doesn't match the expected output. See unit-test-out.snk for what you printed.");
     return false;
   }
+
+  free_state(state);
 
   return true;
 }
@@ -155,21 +160,20 @@ bool test_print_board_1() {
 bool test_print_board_2() {
   clear_unit_test_files();
 
-  char* expected =
-    "####################\n"
-    "#                  #\n"
-    "# d>D    *         #\n"
-    "####################\n";
+  char *expected = "####################\n"
+                   "#                  #\n"
+                   "# d>D    *         #\n"
+                   "####################\n";
   size_t file_size = strlen(expected);
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
   state->num_rows = 4;
   strncpy(state->board[3], state->board[0], DEFAULT_BOARD_WIDTH);
   save_board(state, "unit-test-out.snk");
 
   char actual[file_size + 1];
 
-  FILE* f = fopen("unit-test-out.snk", "r");
+  FILE *f = fopen("unit-test-out.snk", "r");
 
   if (!assert_file_size("unit-test-out.snk", file_size)) {
     return false;
@@ -180,25 +184,23 @@ bool test_print_board_2() {
   actual[file_size] = '\0';
 
   if (strcmp(expected, actual) != 0) {
-    printf("%s\n",
-           "Your printed board doesn't match the expected output. See unit-test-out.snk for what "
-           "you printed.");
+    printf("%s\n", "Your printed board doesn't match the expected output. See unit-test-out.snk for what you printed.");
     return false;
   }
+
+  free_state(state);
 
   return true;
 }
 
 bool test_print_board() {
   if (!test_print_board_1()) {
-    printf("%s\n",
-           "test_print_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_print_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_print_board_2()) {
-    printf("%s\n",
-           "test_print_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_print_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
@@ -231,7 +233,7 @@ bool test_next_square_board_1() {
   */
 
   // set up board
-  game_state_t* actual_state = create_default_state();
+  game_state_t *actual_state = create_default_state();
   save_board(actual_state, "unit-test-out.snk");
 
   // the next square for the snake should be ' '
@@ -240,11 +242,15 @@ bool test_next_square_board_1() {
   }
 
   // check that board has not changed
-  game_state_t* expected_state = create_default_state();
+  game_state_t *expected_state = create_default_state();
   if (!assert_state_equals(expected_state, actual_state)) {
     printf("%s\n", "Error: next_square should not modify board");
     return false;
   }
+
+  free_state(actual_state);
+  free_state(expected_state);
+
   return true;
 }
 
@@ -273,14 +279,20 @@ bool test_next_square_board_2() {
   ####################
   */
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
 
   // set up board
   set_board_at(state, 2, 5, '*');
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be '*'
-  return assert_equals_char("next_square on board 2", '*', next_square(state, 0));
+  if (!assert_equals_char("next_square on board 2", '*', next_square(state, 0))) {
+    return false;
+  }
+
+  free_state(state);
+
+  return true;
 }
 
 bool test_next_square_board_3() {
@@ -308,14 +320,20 @@ bool test_next_square_board_3() {
   ####################
   */
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
 
   // set up board
   set_board_at(state, 2, 5, 'x');
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be 'x'
-  return assert_equals_char("next_square on board 3", 'x', next_square(state, 0));
+  if (!assert_equals_char("next_square on board 3", 'x', next_square(state, 0))) {
+    return false;
+  }
+
+  free_state(state);
+
+  return true;
 }
 
 bool test_next_square_board_4() {
@@ -343,7 +361,7 @@ bool test_next_square_board_4() {
   ####################
   */
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
 
   // set up board
   set_board_at(state, 2, 4, 'W');
@@ -353,7 +371,13 @@ bool test_next_square_board_4() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be '#'
-  return assert_equals_char("next_square on board 4", '#', next_square(state, 0));
+  if (!assert_equals_char("next_square on board 4", '#', next_square(state, 0))) {
+    return false;
+  }
+
+  free_state(state);
+
+  return true;
 }
 
 bool test_next_square_board_5() {
@@ -381,7 +405,7 @@ bool test_next_square_board_5() {
   ####################
   */
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
 
   // set up board
   set_board_at(state, 2, 4, 'v');
@@ -392,7 +416,13 @@ bool test_next_square_board_5() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be ' '
-  return assert_equals_char("next_square on board 5", ' ', next_square(state, 0));
+  if (!assert_equals_char("next_square on board 5", ' ', next_square(state, 0))) {
+    return false;
+  }
+
+  free_state(state);
+
+  return true;
 }
 
 bool test_next_square_board_6() {
@@ -420,7 +450,7 @@ bool test_next_square_board_6() {
   ####################
   */
 
-  game_state_t* state = create_default_state();
+  game_state_t *state = create_default_state();
 
   // set up board
   set_board_at(state, 2, 4, 'v');
@@ -432,43 +462,43 @@ bool test_next_square_board_6() {
   save_board(state, "unit-test-out.snk");
 
   // the next square for the snake should be '#'
-  return assert_equals_char("next_square on board 6", '#', next_square(state, 0));
+  if (!assert_equals_char("next_square on board 6", '#', next_square(state, 0))) {
+    return false;
+  }
+
+  free_state(state);
+
+  return true;
 }
 
 bool test_next_square() {
   if (!test_next_square_board_1()) {
-    printf("%s\n",
-           "test_next_square_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_2()) {
-    printf("%s\n",
-           "test_next_square_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_3()) {
-    printf("%s\n",
-           "test_next_square_board_3 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_3 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_4()) {
-    printf("%s\n",
-           "test_next_square_board_4 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_4 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_5()) {
-    printf("%s\n",
-           "test_next_square_board_5 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_5 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_next_square_board_6()) {
-    printf("%s\n",
-           "test_next_square_board_6 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_next_square_board_6 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
@@ -501,7 +531,7 @@ bool test_update_head_board_1() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 4, '>');
   set_board_at(expected, 2, 5, 'D');
   expected->snakes->head_row = 2;
@@ -509,14 +539,21 @@ bool test_update_head_board_1() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   save_board(actual, "unit-test-in.snk");
 
   update_head(actual, 0);
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_head_board_2() {
@@ -545,7 +582,7 @@ bool test_update_head_board_2() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 4, '^');
   set_board_at(expected, 1, 4, 'W');
   expected->snakes->head_row = 1;
@@ -553,7 +590,7 @@ bool test_update_head_board_2() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 4, 'W');
   actual->snakes->head_row = 2;
   actual->snakes->head_col = 4;
@@ -563,7 +600,14 @@ bool test_update_head_board_2() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_head_board_3() {
@@ -592,7 +636,7 @@ bool test_update_head_board_3() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 4, '^');
   set_board_at(expected, 1, 4, '<');
   set_board_at(expected, 1, 3, 'A');
@@ -601,7 +645,7 @@ bool test_update_head_board_3() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 4, '^');
   set_board_at(actual, 1, 4, 'A');
   actual->snakes->head_row = 1;
@@ -612,28 +656,32 @@ bool test_update_head_board_3() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_head() {
   if (!test_update_head_board_1()) {
     printf("%s\n",
-           "test_update_head_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_head_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_head_board_2()) {
     printf("%s\n",
-           "test_update_head_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_head_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_head_board_3()) {
     printf("%s\n",
-           "test_update_head_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_head_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
@@ -666,19 +714,19 @@ bool test_update_tail_board_1() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 2, ' ');
   set_board_at(expected, 2, 3, 'd');
   set_board_at(expected, 2, 4, '>');
   set_board_at(expected, 2, 5, 'D');
   expected->snakes->head_row = 2;
   expected->snakes->head_col = 5;
-  expected->snakes->head_row = 2;
+  expected->snakes->tail_row = 2;
   expected->snakes->tail_col = 3;
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 4, '>');
   set_board_at(actual, 2, 5, 'D');
   actual->snakes->head_row = 2;
@@ -689,7 +737,14 @@ bool test_update_tail_board_1() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_tail_board_2() {
@@ -718,7 +773,7 @@ bool test_update_tail_board_2() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 2, ' ');
   set_board_at(expected, 2, 3, 's');
   set_board_at(expected, 2, 4, ' ');
@@ -731,7 +786,7 @@ bool test_update_tail_board_2() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 3, 'v');
   set_board_at(actual, 2, 4, ' ');
   set_board_at(actual, 3, 3, 'v');
@@ -744,7 +799,14 @@ bool test_update_tail_board_2() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_tail_board_3() {
@@ -773,7 +835,7 @@ bool test_update_tail_board_3() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
 
   save_board(expected, "unit-test-ref.snk");
   set_board_at(expected, 2, 2, 'S');
@@ -785,7 +847,7 @@ bool test_update_tail_board_3() {
   expected->snakes->tail_col = 3;
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 2, 'S');
   set_board_at(actual, 2, 3, '<');
   set_board_at(actual, 2, 4, ' ');
@@ -800,28 +862,32 @@ bool test_update_tail_board_3() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_tail() {
   if (!test_update_tail_board_1()) {
     printf("%s\n",
-           "test_update_tail_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_tail_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_tail_board_2()) {
     printf("%s\n",
-           "test_update_tail_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_tail_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_tail_board_3()) {
     printf("%s\n",
-           "test_update_tail_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_tail_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
@@ -854,7 +920,7 @@ bool test_update_state_board_1() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 2, ' ');
   set_board_at(expected, 2, 3, 'd');
   set_board_at(expected, 2, 4, '>');
@@ -866,14 +932,21 @@ bool test_update_state_board_1() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   save_board(actual, "unit-test-in.snk");
 
   update_state(actual, corner_food);
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_state_board_2() {
@@ -902,7 +975,7 @@ bool test_update_state_board_2() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 4, '>');
   set_board_at(expected, 2, 5, 'D');
   set_board_at(expected, 1, 1, '*');
@@ -911,7 +984,7 @@ bool test_update_state_board_2() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 5, '*');
   save_board(actual, "unit-test-in.snk");
 
@@ -919,7 +992,14 @@ bool test_update_state_board_2() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_state_board_3() {
@@ -948,7 +1028,7 @@ bool test_update_state_board_3() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 2, 'w');
   set_board_at(expected, 2, 3, ' ');
   set_board_at(expected, 2, 4, ' ');
@@ -960,7 +1040,7 @@ bool test_update_state_board_3() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 2, 'w');
   set_board_at(actual, 2, 3, ' ');
   set_board_at(actual, 2, 4, ' ');
@@ -976,7 +1056,14 @@ bool test_update_state_board_3() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_state_board_4() {
@@ -1005,7 +1092,7 @@ bool test_update_state_board_4() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 2, 'w');
   set_board_at(expected, 2, 3, 'x');
   set_board_at(expected, 2, 4, ' ');
@@ -1017,7 +1104,7 @@ bool test_update_state_board_4() {
   save_board(expected, "unit-test-ref.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 2, 'w');
   set_board_at(actual, 1, 2, '>');
   set_board_at(actual, 1, 3, 'v');
@@ -1033,35 +1120,91 @@ bool test_update_state_board_4() {
   save_board(actual, "unit-test-out.snk");
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_update_state() {
   if (!test_update_state_board_1()) {
     printf("%s\n",
-           "test_update_state_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_state_board_1 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_state_board_2()) {
     printf("%s\n",
-           "test_update_state_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_state_board_2 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_state_board_3()) {
     printf("%s\n",
-           "test_update_state_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_state_board_3 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
     return false;
   }
 
   if (!test_update_state_board_4()) {
     printf("%s\n",
-           "test_update_state_board_4 failed. Check unit-test-in.snk, unit-test-out.snk, and "
-           "unit-test-ref.snk.");
+           "test_update_state_board_4 failed. Check unit-test-in.snk, unit-test-out.snk, and unit-test-ref.snk.");
+    return false;
+  }
+
+  return true;
+}
+
+bool test_read_line_1() {
+  clear_unit_test_files();
+
+  FILE *fp = fopen("tests/01-simple-in.snk", "r");
+  char *expected = "####################\n";
+  char *actual = read_line(fp);
+  fclose(fp);
+
+  if (strcmp(expected, actual) != 0) {
+    free(actual);
+    return false;
+  }
+  free(actual);
+  return true;
+}
+
+bool test_read_line_2() {
+  clear_unit_test_files();
+
+  FILE *fp = fopen("tests/13-sus-in.snk", "r");
+
+  char *expected[] = {"##############\n", "#            #\n", "#  ########  #\n", "#  #      #  #####\n"};
+
+  bool success = true;
+  for (int i = 0; i < 4; i++) {
+    char *actual = read_line(fp);
+    if (strcmp(expected[i], actual) != 0) {
+      success = false;
+      break;
+    }
+    free(actual);
+  }
+
+  fclose(fp);
+  return success;
+}
+
+bool test_read_line() {
+  if (!test_read_line_1()) {
+    printf("%s\n",
+           "test_read_line_1 failed. Check the first line of tests/01-simple-in.snk for a diagram of the line.");
+    return false;
+  }
+
+  if (!test_read_line_2()) {
+    printf("%s\n",
+           "test_read_line_2 failed. Check the first four lines of tests/13-sus-in.snk for a diagram of the board.");
     return false;
   }
 
@@ -1092,26 +1235,28 @@ bool test_load_board_1() {
   #                  #
   ####################
   */
-  char* expected =
-    "####################\n"
-    "#                  #\n"
-    "# d>D    *         #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "#                  #\n"
-    "####################\n";
-  return assert_load_equals("tests/01-simple-in.snk", expected);
+  char *expected = "####################\n"
+                   "#                  #\n"
+                   "# d>D    *         #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "#                  #\n"
+                   "####################\n";
+  FILE *fp = fopen("tests/01-simple-in.snk", "r");
+  bool check = assert_load_equals(fp, expected);
+  fclose(fp);
+  return check;
 }
 
 bool test_load_board_2() {
@@ -1126,14 +1271,16 @@ bool test_load_board_2() {
   # w #
   #####
   */
-  char* expected =
-    "#####\n"
-    "#   #\n"
-    "# W #\n"
-    "# ^ #\n"
-    "# w #\n"
-    "#####\n";
-  return assert_load_equals("tests/06-small-in.snk", expected);
+  char *expected = "#####\n"
+                   "#   #\n"
+                   "# W #\n"
+                   "# ^ #\n"
+                   "# w #\n"
+                   "#####\n";
+  FILE *fp = fopen("tests/06-small-in.snk", "r");
+  bool check = assert_load_equals(fp, expected);
+  fclose(fp);
+  return check;
 }
 
 bool test_load_board_3() {
@@ -1155,37 +1302,36 @@ bool test_load_board_3() {
   #####    #####
 
   */
-  char* expected =
-    "##############\n"
-    "#            #\n"
-    "#  ########  #\n"
-    "#  #      #  #####\n"
-    "#  ########      #\n"
-    "#                #\n"
-    "#      #         #\n"
-    "#                #\n"
-    "#   ######   #####\n"
-    "#   #    #   #\n"
-    "#   #    #   #\n"
-    "#####    #####\n";
-  return assert_load_equals("tests/13-sus-in.snk", expected);
+  char *expected = "##############\n"
+                   "#            #\n"
+                   "#  ########  #\n"
+                   "#  #      #  #####\n"
+                   "#  ########      #\n"
+                   "#                #\n"
+                   "#      #         #\n"
+                   "#                #\n"
+                   "#   ######   #####\n"
+                   "#   #    #   #\n"
+                   "#   #    #   #\n"
+                   "#####    #####\n";
+  FILE *fp = fopen("tests/13-sus-in.snk", "r");
+  bool check = assert_load_equals(fp, expected);
+  fclose(fp);
+  return check;
 }
 
 bool test_load_board() {
   if (!test_load_board_1()) {
-    printf("%s\n",
-           "test_load_board_1 failed. Check tests/01-simple-in.snk for a diagram of the board.");
+    printf("%s\n", "test_load_board_1 failed. Check tests/01-simple-in.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_load_board_2()) {
-    printf("%s\n",
-           "test_load_board_2 failed. Check tests/06-small-in.snk for a diagram of the board.");
+    printf("%s\n", "test_load_board_2 failed. Check tests/06-small-in.snk for a diagram of the board.");
     return false;
   }
   if (!test_load_board_3()) {
-    printf("%s\n",
-           "test_load_board_3 failed. Check tests/13-sus-in.snk for a diagram of the board.");
+    printf("%s\n", "test_load_board_3 failed. Check tests/13-sus-in.snk for a diagram of the board.");
     return false;
   }
 
@@ -1218,7 +1364,7 @@ bool test_find_head_board_1() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 4, 'v');
   set_board_at(expected, 3, 4, 'v');
   set_board_at(expected, 4, 4, 'v');
@@ -1233,7 +1379,7 @@ bool test_find_head_board_1() {
   save_board(expected, "unit-test-out.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 4, 'v');
   set_board_at(actual, 3, 4, 'v');
   set_board_at(actual, 4, 4, 'v');
@@ -1247,7 +1393,14 @@ bool test_find_head_board_1() {
   find_head(actual, 0);
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_find_head_board_2() {
@@ -1276,12 +1429,12 @@ bool test_find_head_board_2() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 5, 's');
   set_board_at(expected, 3, 5, 'v');
   set_board_at(expected, 4, 5, 'S');
   expected->snakes = realloc(expected->snakes, sizeof(snake_t) * 2);
-  snake_t* tmp = expected->snakes;
+  snake_t *tmp = expected->snakes;
   tmp->tail_row = 2;
   tmp->tail_col = 2;
   tmp->head_row = 2;
@@ -1296,7 +1449,7 @@ bool test_find_head_board_2() {
   save_board(expected, "unit-test-out.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 5, 's');
   set_board_at(actual, 3, 5, 'v');
   set_board_at(actual, 4, 5, 'S');
@@ -1315,19 +1468,24 @@ bool test_find_head_board_2() {
   find_head(actual, 1);
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_find_head() {
   if (!test_find_head_board_1()) {
-    printf("%s\n",
-           "test_find_head_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_find_head_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_find_head_board_2()) {
-    printf("%s\n",
-           "test_find_head_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_find_head_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
@@ -1360,12 +1518,13 @@ bool test_initialize_snakes_board_1() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   save_board(expected, "unit-test-out.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   free(actual->snakes);
+  actual->snakes = NULL;
   actual->num_snakes = 0;
 
   actual = initialize_snakes(actual);
@@ -1376,7 +1535,14 @@ bool test_initialize_snakes_board_1() {
   }
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_initialize_snakes_board_2() {
@@ -1405,7 +1571,7 @@ bool test_initialize_snakes_board_2() {
   */
 
   // set up expected board
-  game_state_t* expected = create_default_state();
+  game_state_t *expected = create_default_state();
   set_board_at(expected, 2, 4, 'v');
   set_board_at(expected, 3, 4, 'v');
   set_board_at(expected, 4, 4, 'v');
@@ -1420,7 +1586,7 @@ bool test_initialize_snakes_board_2() {
   save_board(expected, "unit-test-out.snk");
 
   // set up actual board
-  game_state_t* actual = create_default_state();
+  game_state_t *actual = create_default_state();
   set_board_at(actual, 2, 4, 'v');
   set_board_at(actual, 3, 4, 'v');
   set_board_at(actual, 4, 4, 'v');
@@ -1431,6 +1597,7 @@ bool test_initialize_snakes_board_2() {
   set_board_at(actual, 4, 7, '^');
   set_board_at(actual, 3, 7, 'W');
   free(actual->snakes);
+  actual->snakes = NULL;
   actual->num_snakes = 0;
 
   actual = initialize_snakes(actual);
@@ -1441,21 +1608,24 @@ bool test_initialize_snakes_board_2() {
   }
 
   // check that actual board matches expected board
-  return assert_state_equals(expected, actual);
+  if (!assert_state_equals(expected, actual)) {
+    return false;
+  }
+
+  free_state(expected);
+  free_state(actual);
+
+  return true;
 }
 
 bool test_initialize_snakes() {
   if (!test_initialize_snakes_board_1()) {
-    printf(
-      "%s\n",
-      "test_initialize_snakes_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_initialize_snakes_board_1 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
   if (!test_initialize_snakes_board_2()) {
-    printf(
-      "%s\n",
-      "test_initialize_snakes_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
+    printf("%s\n", "test_initialize_snakes_board_2 failed. Check unit-test-out.snk for a diagram of the board.");
     return false;
   }
 
@@ -1465,7 +1635,7 @@ bool test_initialize_snakes() {
 /*
   Feel free to comment out tests.
 */
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   bool MEMCHECK_MODE = false;
 
   // Parse arguments
@@ -1480,9 +1650,8 @@ int main(int argc, char* argv[]) {
 
   init_colors();
 
-  printf("%s\n",
-         "Reminder: These tests are not comprehensive, and passing them does not guarantee that "
-         "your implementation is working.");
+  printf("%s\n", "Reminder: These tests are not comprehensive, and passing them does not guarantee that your "
+                 "implementation is working.");
 
   if (MEMCHECK_MODE) {
     printf("\nTesting free_state...\n");
@@ -1506,6 +1675,9 @@ int main(int argc, char* argv[]) {
       return 0;
     }
     if (!test_and_print("update_state (Task 4)", test_update_state)) {
+      return 0;
+    }
+    if (!test_and_print("read_line (Task 5)", test_read_line)) {
       return 0;
     }
     if (!test_and_print("load_board (Task 5)", test_load_board)) {

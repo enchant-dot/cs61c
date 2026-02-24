@@ -1,10 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Wno-unused-function -Wconversion -std=c99 -g
 LDFLAGS =
-SNAKE_DEPS = snake.o snake_utils.o state.o
-INTERACTIVE_DEPS = interactive_snake.o snake_utils.o state.o
-UNIT_TESTS_DEPS = snake_utils.o unit_tests.o asserts.o
-CUSTOM_TESTS_DEPS = snake_utils.o custom_tests.o asserts.o
+SNAKE_DEPS = src/snake.o src/snake_utils.o src/state.o
+INTERACTIVE_DEPS = src/interactive_snake.o src/snake_utils.o src/state.o
+UNIT_TESTS_DEPS = src/snake_utils.o src/unit_tests.o src/asserts.o
+CUSTOM_TESTS_DEPS = src/snake_utils.o src/custom_tests.o src/asserts.o
 SHORTER_TESTS = 01-simple 02-direction 03-tail 04-food 05-wall 06-small 07-medium 08-multisnake 09-everything 10-filled 11-manyclose 12-corner 13-sus 14-orochi 15-hydra
 LONGER_TESTS = 16-huge 17-wide 18-tall 19-101-127 20-long-line 21-bigL
 
@@ -50,10 +50,10 @@ custom-tests: $(CUSTOM_TESTS_DEPS)
 %.o: %.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-unit_tests.o: unit_tests.c state.c asserts.c
+src/unit_tests.o: src/unit_tests.c src/state.c src/asserts.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-custom-tests.o: custom_tests.c state.c asserts.c
+src/custom-tests.o: src/custom_tests.c src/state.c src/asserts.c
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 .PHONY: check-hashes
@@ -62,7 +62,7 @@ check-hashes:
 
 .PHONY: clean
 clean:
-	rm -f interactive-snake snake unit-tests custom-tests unit-test-*.snk *.exe *.o tests/*-out.snk
+	rm -f interactive-snake snake unit-tests custom-tests unit-test-*.snk *.exe *.o src/*.o tests/*-out.snk
 
 .PHONY: debug-unit-tests
 debug-unit-tests: unit-tests check-hashes

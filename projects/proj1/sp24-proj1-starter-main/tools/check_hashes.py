@@ -6,13 +6,13 @@ import sys
 proj_dir_path = Path(__file__).parent.parent
 
 starter_file_hashes = {
-    "asserts.c": "4e3ff84460a86c061788a43818fb81e6",
-    "asserts.h": "e3ed9df2f3dac5879f1d705dafbfbb77",
-    "snake_utils.c": "dbd17c0e6b35c8b30f9545e9246cf721",
-    "snake_utils.h": "f5dca7645202f40c4ee1ab3c80883601",
-    "state.h": "ee85e1c5bcabed222db06008dd93dca8",
-    "unit_tests.c": "d52a9b5948efbc832e44e010fd5464b6",
-    "Makefile": "1785686c093be52141bac37c637ccf5e",
+    "Makefile": "a8acfd1391a16d08115e322bc9d6bdcf",
+    "src/asserts.c": "1fbf5faf2ce3a609e889f8d80595760e",
+    "src/asserts.h": "1bead6846d61214d50acb266cb11627c",
+    "src/snake_utils.c": "9a34d264573597f435972cbf39aa26c3",
+    "src/snake_utils.h": "e5a7d45f2d3aeb29fcacf9ebcf0cbb95",
+    "src/state.h": "2b79b6889f2d08ea63ea44b165ad3ed0",
+    "src/unit_tests.c": "297131ae1cfaddd4b362143257717652",
     "tests/01-simple-in.snk": "9300d4767e059a3056a9bf4bd5455b20",
     "tests/01-simple-ref.snk": "7d1aa30890d6d7f38b4c8fe864680532",
     "tests/02-direction-in.snk": "6d3d008aae31e41adf17c715564a5c5f",

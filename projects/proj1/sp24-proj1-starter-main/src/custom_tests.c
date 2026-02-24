@@ -12,7 +12,7 @@
 int greater_than_forty_two(int x) { return x > 42; }
 
 bool is_vowel(char c) {
-  char* vowels = "aeiouAEIOU";
+  char *vowels = "aeiouAEIOU";
   for (int i = 0; i < strlen(vowels); i++) {
     if (c == vowels[i]) {
       return true;
@@ -121,12 +121,12 @@ bool test_head_to_body() {
   return true;
 }
 
-bool test_get_next_x() {
+bool test_get_next_row() {
   // TODO: Implement this function.
   return true;
 }
 
-bool test_get_next_y() {
+bool test_get_next_col() {
   // TODO: Implement this function.
   return true;
 }
@@ -160,18 +160,18 @@ bool test_customs() {
     printf("%s\n", "test_head_to_body failed");
     return false;
   }
-  if (!test_get_next_x()) {
-    printf("%s\n", "test_get_next_x failed");
+  if (!test_get_next_row()) {
+    printf("%s\n", "test_get_next_row failed");
     return false;
   }
-  if (!test_get_next_y()) {
-    printf("%s\n", "test_get_next_y failed");
+  if (!test_get_next_col()) {
+    printf("%s\n", "test_get_next_col failed");
     return false;
   }
   return true;
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
   init_colors();
 
   if (!test_and_print("custom", test_customs)) {
