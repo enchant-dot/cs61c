@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-Wall -std=c99
+CFLAGS=-g -Wall -std=c99
 
 all: linked_list vector bit_ops
 
