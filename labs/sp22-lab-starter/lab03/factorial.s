@@ -5,7 +5,7 @@ n: .word 8
 
 .text
 main:
-    la t0, n
+    la t0, n 
     lw a0, 0(t0)
     jal ra, factorial
 
@@ -22,3 +22,17 @@ main:
 
 factorial:
     # YOUR CODE HERE
+    factorial:
+    # YOUR CODE HERE
+    mv t1, a0
+    addi t2, x0, 1
+    addi t3, x0, 1
+loop:
+    beq t1, t3, exit
+    mul t2, t2, t1
+    addi t1, t1, -1
+    j loop
+
+exit:
+    mv a0, t2;
+    jr ra
