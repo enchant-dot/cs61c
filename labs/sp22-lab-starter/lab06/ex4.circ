@@ -10,6 +10,7 @@
     </tool>
     <tool name="Pin">
       <a name="facing" val="north"/>
+      <a name="locked" val="true"/>
     </tool>
     <tool name="Probe">
       <a name="radix" val="16"/>
@@ -165,5 +166,39 @@
       <a name="output" val="true"/>
       <a name="width" val="8"/>
     </comp>
+    <comp lib="3" loc="(270,120)" name="Multiplier"/>
+    <comp lib="3" loc="(480,160)" name="Adder"/>
+    <comp lib="4" loc="(310,110)" name="Register">
+      <a name="appearance" val="logisim_evolution"/>
+    </comp>
+    <comp lib="4" loc="(520,140)" name="Register">
+      <a name="appearance" val="logisim_evolution"/>
+    </comp>
+    <wire from="(170,150)" to="(180,150)"/>
+    <wire from="(170,210)" to="(310,210)"/>
+    <wire from="(170,90)" to="(210,90)"/>
+    <wire from="(180,130)" to="(180,150)"/>
+    <wire from="(180,130)" to="(230,130)"/>
+    <wire from="(210,110)" to="(230,110)"/>
+    <wire from="(210,90)" to="(210,110)"/>
+    <wire from="(270,120)" to="(290,120)"/>
+    <wire from="(290,120)" to="(290,140)"/>
+    <wire from="(290,140)" to="(310,140)"/>
+    <wire from="(310,180)" to="(310,210)"/>
+    <wire from="(310,210)" to="(520,210)"/>
+    <wire from="(370,140)" to="(420,140)"/>
+    <wire from="(420,140)" to="(420,150)"/>
+    <wire from="(420,150)" to="(440,150)"/>
+    <wire from="(430,170)" to="(430,250)"/>
+    <wire from="(430,170)" to="(440,170)"/>
+    <wire from="(430,250)" to="(600,250)"/>
+    <wire from="(480,160)" to="(510,160)"/>
+    <wire from="(510,160)" to="(510,170)"/>
+    <wire from="(510,170)" to="(520,170)"/>
+    <wire from="(580,170)" to="(600,170)"/>
+    <wire from="(600,170)" to="(600,250)"/>
+    <wire from="(600,170)" to="(700,170)"/>
+    <wire from="(700,130)" to="(700,170)"/>
+    <wire from="(700,130)" to="(810,130)"/>
   </circuit>
 </project>
