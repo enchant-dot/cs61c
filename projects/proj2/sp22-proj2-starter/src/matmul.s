@@ -26,38 +26,97 @@
 matmul:
 
 	# Error checks
+	li t0, 1
+	blt a1, t0, error_dim 
+	blt a2, t0, error_dim 
+	blt a4, t0, error_dim 
+	blt a5, t0, error_dim 
+	bne a2, a4, error_dim
 
+	addi sp, sp, -36
+	sw ra, 0(sp)
+	sw s0, 4(sp)
+	sw s1, 8(sp)
+	sw s2, 12(sp)
+	sw s3, 16(sp)
+	sw s4, 20(sp)
+	sw s5, 24(sp)
+	sw s6, 28(sp)
+	sw s7, 32(sp)
+	sw s8, 36(sp)
+
+	mv s0, a0 
+	mv s1, a1 
+	mv s2, a2
+	mv s3, a3 
+	mv s4, a5 
+	mv s5, a6 
+
+	li s6, 0 
 
 	# Prologue
 
 
 outer_loop_start:
+	bge s6, s1, outer_loop_end
 
-
-
+	li s7, 0 
 
 inner_loop_start:
+	bge s7, s4, inner_loop_end
 
+	
+	mul t0, s6, s2
+	slli t0, t0, 2
+	add a0, s0, t0
 
+	slli t1, s7, 2
+	add a1, s3, t1
 
+	mv a2, s2
 
+	li a3, 1
 
+	mv a4, s4
 
+	jal ra, dot
 
-
-
-
-
+	sw a0, 0(s5)
+	addi s5, s5, 4
+	
+	addi s7, s7, 1
+	j inner_loop_start
 
 inner_loop_end:
-
-
-
+	addi s6, s6, 1
+	j outer_loop_start
 
 outer_loop_end:
-
-
-	# Epilogue
-
+	lw ra, 0(sp)
+	lw s0, 4(sp)
+	lw s1, 8(sp)
+	lw s2, 12(sp)
+	lw s3, 16(sp)
+	lw s4, 20(sp)
+	lw s5, 24(sp)
+	lw s6, 28(sp)
+	lw s7, 32(sp)
+	addi sp, sp, 36
 
 	ret
+
+error_dim:
+	li a0, 38
+    j exit
+
+
+
+
+
+
+
+
+
+
+
+
