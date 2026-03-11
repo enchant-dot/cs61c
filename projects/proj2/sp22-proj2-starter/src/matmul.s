@@ -83,12 +83,6 @@ inner_loop_start:
 
 	sw a0, 0(s5)
 	addi s5, s5, 4
-	
-	addi s7, s7, 1
-	j inner_loop_start
-
-inner_loop_end:
-	addi s6, s6, 1
 	j outer_loop_start
 
 outer_loop_end:
@@ -107,7 +101,13 @@ outer_loop_end:
 
 error_dim:
 	li a0, 38
-    j exit
+    j exit	
+	addi s7, s7, 1
+	j inner_loop_start
+
+inner_loop_end:
+	addi s6, s6, 1
+
 
 
 
