@@ -15,9 +15,9 @@ read_matrix:
     sw s4, 20(sp)
     sw s5, 24(sp)
 
-  
-    mv s0, a1        
-    mv s1, a2        
+
+    mv s0, a1       
+    mv s1, a2       
 
 
     li a1, 0        
@@ -25,9 +25,9 @@ read_matrix:
     
 
     blt a0, zero, error_fopen
-    mv s2, a0       
+    mv s2, a0      
 
- 
+
     mv a0, s2
     mv a1, s0
     addi a2, zero, 4 
@@ -40,7 +40,7 @@ read_matrix:
 
     mv a0, s2
     mv a1, s1
-    addi a2, zero, 4 
+    addi a2, zero, 4
     jal ra, fread
     addi t0, zero, 4
     bne a0, t0, error_fread
@@ -49,12 +49,12 @@ read_matrix:
     lw t1, 0(s0)
     lw t2, 0(s1)
     mul t3, t1, t2    
-    slli s4, t3, 2    
+    slli s4, t3, 2  
     
     mv a0, s4
     jal ra, malloc
     beq a0, zero, error_malloc
-    mv s3, a0         
+    mv s3, a0       
 
 
     mv a0, s2
@@ -68,9 +68,7 @@ read_matrix:
     jal ra, fclose
     bnez a0, error_fclose
 
-
     mv a0, s3
-
 
     lw ra, 0(sp)
     lw s0, 4(sp)
